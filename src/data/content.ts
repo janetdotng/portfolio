@@ -41,23 +41,23 @@ export const homeTdk: SeoTdk = {
 	keywords: 'Janet,showcase,portfolio'
 }
 // SEO TDK blg
-//export const blogTdk: SeoTdk = {
-//	title: 'Janet Ng’s Blog',
-//	description: 'Thoughts and notes by Hong Kong-based designer Janet Ng',
-//	keywords: 'Janet,blog'
-//}
+export const blogTdk: SeoTdk = {
+	title: 'Janet Ng’s Blog',
+	description: 'Thoughts and notes by Hong Kong-based designer Janet Ng',
+	keywords: 'Janet,blog'
+}
 // SEO TDK about
 export const aboutTdk: SeoTdk = {
 	title: 'Janet Ng’s Bio',
 	description: 'About Hong Kong-based designer Janet Ng',
 	keywords: 'Janet,about'
 }
-// SEO TDK  proojects
-//export const projectTdk: SeoTdk = {
-//	title: 'Janet Ng’s Projects',
-//	description: 'Projects by Janet Ng',
-//	keywords: 'Janet,projects'
-//}
+ SEO TDK  proojects
+export const projectTdk: SeoTdk = {
+	title: 'Janet Ng’s Projects',
+	description: 'Projects by Janet Ng',
+	keywords: 'Janet,projects'
+}
 // SEO TDK 404
 export const notFoundTdk: SeoTdk = {
 	title: 'Apologies, 404 Not Found.',
@@ -127,8 +127,8 @@ interface PageTag {
 export const pageTag: PageTag = {
 	index: 'SHOWCASE',
 	about: 'BIO',
-//	blog: 'BLOG',
-//	project: 'PROJECTS'
+	blog: 'BLOG',
+	project: 'PROJECTS'
 }
 
 
@@ -141,9 +141,9 @@ interface PageDescription {
 }
 export const pageDescription: PageDescription = {
 	index: 'Hong Kong-based designer. Specialised in motion graphics, multimedia design, woodcarving, and more.',
-//	project: "Selection of works owned or participated by me.",
+	project: "Selection of works owned or participated by me.",
 	about: 'A few words about me.',
-//	blog: 'Thoughts and notes',
+	blog: 'Thoughts and notes',
 }
 
 
