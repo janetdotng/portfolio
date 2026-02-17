@@ -52,7 +52,7 @@ export const aboutTdk: SeoTdk = {
 	description: 'About Hong Kong-based designer Janet Ng',
 	keywords: 'Janet,about'
 }
- SEO TDK  proojects
+// SEO TDK  proojects
 export const projectTdk: SeoTdk = {
 	title: 'Janet Ng’s Projects',
 	description: 'Projects by Janet Ng',
