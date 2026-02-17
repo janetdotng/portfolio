@@ -121,8 +121,8 @@ export const socialLinks = [
 interface PageTag {
 	index: string
 	about: string
-//	blog: string
-//	project: string
+	blog: string
+	project: string
 }
 export const pageTag: PageTag = {
 	index: 'SHOWCASE',
@@ -135,8 +135,8 @@ export const pageTag: PageTag = {
 //Page Description 页面大标题下的说明文字
 interface PageDescription {
 	index?: string
-//	project?: string
-//	blog?: string
+	project?: string
+	blog?: string
 	about?: string
 }
 export const pageDescription: PageDescription = {
