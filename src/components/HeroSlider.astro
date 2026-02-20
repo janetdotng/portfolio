@@ -73,15 +73,15 @@ const slides = [
           <div class="visual-set">
 
             <div class="side left-wrap">
-              <img src={slide.images[0]} draggable="false" />
+              <img src={slide.media[0]} draggable="false" />
             </div>
 
             <div class="centre-wrap">
-              <img src={slide.images[1]} draggable="false" />
+              <img src={slide.media[1]} draggable="false" />
             </div>
 
             <div class="side right-wrap">
-              <img src={slide.images[2]} draggable="false" />
+              <img src={slide.media[2]} draggable="false" />
             </div>
 
           </div>
@@ -104,7 +104,7 @@ const slides = [
   </div>
 </section>
 
-<script>
+<script is:inline>
 const slider = document.getElementById("slider");
 let panels = Array.from(document.querySelectorAll(".panel"));
 const total = panels.length;
@@ -162,11 +162,11 @@ function setActiveContent() {
   const bg = active.dataset.bg;
   const title = active.dataset.title;
 
-  dynamicTitle.style.opacity = 0;
+  dynamicTitle.style.opacity = "0";
 
   setTimeout(() => {
     dynamicTitle.textContent = title;
-    dynamicTitle.style.opacity = 1;
+    dynamicTitle.style.opacity = "1";
   }, 200);
 
   document.body.style.backgroundColor = bg;
