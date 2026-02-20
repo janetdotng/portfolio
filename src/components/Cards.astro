@@ -15,7 +15,7 @@ const cards = entries
     slug: entry.slug,
     title: entry.data.title,
     cover: entry.data.cover ?? '',
-    coverAlt: entry.data.coverAlt ?? entry.data.title,
+    covera: entry.data.coveralt ?? entry.data.title,
     description: entry.data.description ?? '',
     category: entry.data.category ?? [],
     tag: entry.data.tag ?? '',
@@ -59,7 +59,7 @@ const count = cards.length;
   class="card-figure__img"
   src={card.cover}
   loading="lazy"
-  alt={card.coverAlt}
+  alt={card.coveralt}
 />
             </div>
 
