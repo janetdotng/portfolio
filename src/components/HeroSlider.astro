@@ -87,7 +87,7 @@ const slides = [
 
             <div class="side left-wrap">
               {slide.media[0].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
                   <source src={slide.media[0].src} type="video/mp4" />
                 </video>
               ) : (
@@ -97,7 +97,7 @@ const slides = [
 
             <div class="centre-wrap">
               {slide.media[1].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
                   <source src={slide.media[1].src} type="video/mp4" />
                 </video>
               ) : (
@@ -107,7 +107,7 @@ const slides = [
 
             <div class="side right-wrap">
               {slide.media[2].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
                   <source src={slide.media[2].src} type="video/mp4" />
                 </video>
               ) : (
