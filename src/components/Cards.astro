@@ -1,25 +1,28 @@
 ---
 import Filter from '../components/Filter.astro';
-import cardData from '../data/home.json';
+import { getCollection } from 'astro:content';
 
-const cards = [];
+const entries = await getCollection('showcase');
 
-for (const [index,item] of cardData.entries()) {
-  const card = {
-    id: item.id || index,
-    title: item.title,
-    cover: item.cover || "",
-    description: item.desc || "",
-    url: item.url || "",
-    detail: item.detail || "",
-    category: item.category || "other",
-    tag: item.tag || "",
-    date: item.date || "",
-    mark: item.mark|| "",
-    index: index + 1,
-  };
-  cards.push(card);
-}
+const cards = entries
+  .sort((a, b) => {
+    if (a.data.featured && !b.data.featured) return -1;
+    if (!a.data.featured && b.data.featured) return 1;
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+  })
+  .map((entry, index) => ({
+    id: entry.slug,
+    slug: entry.slug,
+    title: entry.data.title,
+    cover: entry.data.cover ?? '',
+    coverAlt: entry.data.coverAlt ?? entry.data.title,
+    description: entry.data.description ?? '',
+    category: entry.data.category ?? [],
+    tag: entry.data.tag ?? '',
+    date: entry.data.publishDate.toISOString(),
+    externalUrl: entry.data.externalUrl ?? null,
+    index: index + 1
+  }));
 
 const count = cards.length;
 ---
@@ -30,66 +33,54 @@ const count = cards.length;
   <div class="js-shuffle-sizer">
     <div class="card-list my-shuffle-container" id="js-shuffle">
 
-      {cards.reverse().map((card) => (
+      {cards.map((card) => (
         <div
           class="card-item col-xs-1a col-md-2a col-lg-3a col-xxl-4a"
           data-groups={JSON.stringify(card.category)}
           data-date-created={card.date}
           data-title={card.title}
         >
+          <a
+  href={card.externalUrl ? card.externalUrl : `/showcase/${card.slug}`}
+  class="card-wrapper"
+  target={card.externalUrl ? "_blank" : "_self"}
+>
           <div class="card-header">
-            <div class="card-type type">
-              <span class="type-tag">- {card.tag} - </span>
-            </div>
-            <div class="card-type type">
-              <span class="type-tag">(0{card.index})</span>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <a
-              href={card.detail ? card.detail : "javascript:void(0)"}
-              class="card-figure"
-              target={card.detail ? "_blank" : "_self"}
-            >
-              <img
-                class="card-figure__img lazy"
-                src={card.cover}
-                loading="lazy"
-                alt={card.title}
-              >
-            </a>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-detail">
-              <a
-                href={card.detail ? card.detail : "javascript:void(0)"}
-                target={card.detail ? "_blank" : "_self"}
-                class="card-name card-item__title"
-              >
-                {card.mark && <span class="tag-original">Recommended</span>}
-                {card.title}
-              </a>
-              <div class="card-info">
-                {card.description}
+              <div class="card-type type">
+                {card.tag && <span class="type-tag">- {card.tag} -</span>}
+              </div>
+              <div class="card-type type">
+                <span class="type-tag">(0{card.index})</span>
               </div>
             </div>
 
-            {card.url && (
-              <a
-                href={card.url}
-                class="card-link card-link__go"
-                target="_blank"
-              ></a>
-            )}
-          </div>
+            <div class="card-body">
+              <img
+  class="card-figure__img"
+  src={card.cover}
+  loading="lazy"
+  alt={card.coverAlt}
+/>
+            </div>
+
+            <div class="card-footer">
+              <div class="card-detail">
+                <div class="card-name card-item__title">
+                  {card.title}
+                </div>
+                <div class="card-info">
+                  {card.description}
+                </div>
+              </div>
+            </div>
+
+          </a>
         </div>
       ))}
 
     </div>
 
-    <div class="col-sm-1 col-xs-1 my-sizer-element" id="my-sizer-element"></div>
+    <div class="col-sm-1 col-xs-1 my-sizer-element"></div>
   </div>
 </div>
 
