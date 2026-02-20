@@ -8,14 +8,16 @@ const showcase = defineCollection({
     publishDate: z.coerce.date(),
     read: z.number().optional(),
 
-    cover: z.string(),                // required for grid
-    category: z.array(z.string()),    // for filtering
-    tag: z.string().optional(),       // UI label
-    featured: z.boolean().optional(), // future use
+    cover: z.string(),
+    coverAlt: z.string().optional(),
+
+    category: z.array(z.string()),
+    tags: z.array(z.string()).optional(),
+
+    tag: z.string().optional(),
+    featured: z.boolean().optional(),
     externalUrl: z.string().optional()
   }),
 });
 
-export const collections = {
-  showcase
-};
+export const collections = { showcase };
