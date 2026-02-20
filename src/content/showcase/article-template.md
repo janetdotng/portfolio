@@ -1,9 +1,10 @@
 ---
 title: Markdown 样式示例
-description: 'Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.'
-publishDate: 2024-10-20 00:00:00
-# img: /assets/stock.jpg 可配置文章封面
-# img_alt: stock
+description: 'Sample content'
+publishDate: 2024-10-20
+cover: '/assets/placeholder.jpg'
+coverAlt: '示例图片'
+category: ['example']
 tags:
   - Markdown
 ---

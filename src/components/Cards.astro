@@ -2,7 +2,8 @@
 import Filter from '../components/Filter.astro';
 import { getCollection } from 'astro:content';
 
-const entries = await getCollection('showcase');
+const entries = (await getCollection('showcase'))
+  .filter(entry => entry.slug !== 'article-template');
 
 const cards = entries
   .sort((a, b) => {
@@ -14,10 +15,10 @@ const cards = entries
     id: entry.slug,
     slug: entry.slug,
     title: entry.data.title,
-    cover: entry.data.cover ?? '',
-    covera: entry.data.coveralt ?? entry.data.title,
+    cover: entry.data.cover,
+    coverAlt: entry.data.coverAlt ?? entry.data.title,
     description: entry.data.description ?? '',
-    category: entry.data.category ?? [],
+    category: (entry.data.category ?? []).map(c => c.toLowerCase()),
     tag: entry.data.tag ?? '',
     date: entry.data.publishDate.toISOString(),
     externalUrl: entry.data.externalUrl ?? null,
@@ -59,7 +60,7 @@ const count = cards.length;
   class="card-figure__img"
   src={card.cover}
   loading="lazy"
-  alt={card.coveralt}
+  alt={card.coverAlt}
 />
             </div>
 
