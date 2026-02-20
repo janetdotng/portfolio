@@ -60,19 +60,6 @@ const slides = [
 ];
 ---
 
-<!-- Preload ALL slide visuals -->
-<head>
-  {slides.map(slide =>
-    slide.media.map(item => (
-      item.type === "video" ? (
-        <link rel="preload" as="video" href={item.src} />
-      ) : (
-        <link rel="preload" as="image" href={item.src} />
-      )
-    ))
-  )}
-</head>
-
 <section class="hero">
   <div class="slider" id="slider">
     {slides.map((slide) => (
