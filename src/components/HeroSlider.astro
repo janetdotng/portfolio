@@ -25,16 +25,16 @@ const slides = [
     link: "/showcase?group=graphicdesign",
     media: [
       {
-        type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602373/slide2-left_h48xs9"
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_600/v1771605614/slide2-left_jsu3wr"
       },
       {
-        type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771603361/slide2_sds4gx"
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771605785/slide2-center_hoxzyz"
       },
       {
-        type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602338/slide2-right_gp1kzo"
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_600/v1771605719/slide2-right_qrwz87"
       }
     ]
   },
@@ -60,6 +60,19 @@ const slides = [
 ];
 ---
 
+<!-- Preload ALL slide visuals -->
+<head>
+  {slides.map(slide =>
+    slide.media.map(item => (
+      item.type === "video" ? (
+        <link rel="preload" as="video" href={item.src} />
+      ) : (
+        <link rel="preload" as="image" href={item.src} />
+      )
+    ))
+  )}
+</head>
+
 <section class="hero">
   <div class="slider" id="slider">
     {slides.map((slide) => (
@@ -73,15 +86,33 @@ const slides = [
           <div class="visual-set">
 
             <div class="side left-wrap">
-              <img src={slide.media[0].src} draggable="false" />
+              {slide.media[0].type === "video" ? (
+                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                  <source src={slide.media[0].src} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={slide.media[0].src} loading="eager" draggable="false" />
+              )}
             </div>
 
             <div class="centre-wrap">
-              <img src={slide.media[1].src} draggable="false" />
+              {slide.media[1].type === "video" ? (
+                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                  <source src={slide.media[1].src} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={slide.media[1].src} loading="eager" draggable="false" />
+              )}
             </div>
 
             <div class="side right-wrap">
-              <img src={slide.media[2].src} draggable="false" />
+              {slide.media[2].type === "video" ? (
+                <video autoplay muted loop playsinline preload="auto" disablePictureInPicture>
+                  <source src={slide.media[2].src} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={slide.media[2].src} loading="eager" draggable="false" />
+              )}
             </div>
 
           </div>
@@ -110,10 +141,7 @@ let panels = Array.from(document.querySelectorAll(".panel"));
 const total = panels.length;
 
 let current = 1;
-let startY = 0;
 let offset = 0;
-let isDragging = false;
-let dragMoved = false;
 let wheelLock = false;
 let autoInterval;
 const autoplayDelay = 7000;
@@ -122,8 +150,6 @@ const dynamicTitle = document.getElementById("dynamicTitle");
 const progressBar = document.querySelector(".progress-bar");
 const upBtn = document.getElementById("upBtn");
 const downBtn = document.getElementById("downBtn");
-
-/* Infinite Loop */
 
 const firstClone = panels[0].cloneNode(true);
 const lastClone = panels[total - 1].cloneNode(true);
@@ -139,7 +165,7 @@ function updatePosition(animate = true) {
     : "none";
 
   slider.style.transform =
-    `translateY(${-current * window.innerHeight + offset}px)`;
+    `translateY(${-current * window.innerHeight}px)`;
 }
 
 function fixLoop() {
@@ -155,8 +181,6 @@ function fixLoop() {
   }
 }
 
-/* Content */
-
 function setActiveContent() {
   const active = panels[current];
   const bg = active.dataset.bg;
@@ -171,8 +195,6 @@ function setActiveContent() {
 
   document.body.style.backgroundColor = bg;
 }
-
-/* Navigation */
 
 function goNext() {
   if (wheelLock) return;
@@ -209,83 +231,14 @@ function goPrev() {
 upBtn.onclick = goPrev;
 downBtn.onclick = goNext;
 
-/* Drag */
-
-document.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  dragMoved = false;
-  startY = e.clientY;
-  slider.style.transition = "none";
-});
-
-document.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-
-  const delta = e.clientY - startY;
-  if (Math.abs(delta) > 5) dragMoved = true;
-
-  offset = delta * 0.9;
-  updatePosition(false);
-});
-
-document.addEventListener("mouseup", () => {
-  if (!isDragging) return;
-  isDragging = false;
-
-  const threshold = window.innerHeight / 6;
-
-  if (offset > threshold) goPrev();
-  else if (offset < -threshold) goNext();
-  else updatePosition(true);
-
-  offset = 0;
-});
-
-document.addEventListener("click", (e) => {
-  if (dragMoved) e.preventDefault();
-});
-
-/* Wheel */
-
-document.addEventListener("wheel", (e) => {
-  if (wheelLock) return;
-
-  if (e.deltaY > 0) goNext();
-  else goPrev();
-});
-
-/* Autoplay */
-
 function startAutoplay() {
   autoInterval = setInterval(goNext, autoplayDelay);
-  animateProgress();
 }
 
 function restartAutoplay() {
   clearInterval(autoInterval);
-  resetProgress();
   startAutoplay();
 }
-
-/* Progress */
-
-function animateProgress() {
-  progressBar.style.transition = "none";
-  progressBar.style.height = "0%";
-
-  setTimeout(() => {
-    progressBar.style.transition =
-      `height ${autoplayDelay}ms linear`;
-    progressBar.style.height = "100%";
-  }, 50);
-}
-
-function resetProgress() {
-  progressBar.style.transition = "none";
-  progressBar.style.height = "0%";
-}
-
-/* Init */
 
 updatePosition(false);
 setActiveContent();
@@ -293,194 +246,11 @@ startAutoplay();
 </script>
 
 <style>
-.hero {
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
-
-.slider {
-  width: 100%;
-}
-
-.panel {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-track {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0; /* important */
-  position: relative;
-}
-
-.card {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  aspect-ratio: 4 / 5;
-}
-
-.card.center {
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  z-index: 3;
-}
-
-.card.left {
-  left: calc(50% - var(--card-width));
-  transform: translate(-50%, -50%) scale(0.85);
-  z-index: 2;
-}
-
-.card.right {
-  left: calc(50% + var(--card-width));
-  transform: translate(-50%, -50%) scale(0.85);
-  z-index: 2;
-}
-
-.card-link {
-  width: 100%;
-  height: 60vh;
-  max-height: 600px;
-  position: relative;
-}
-
-.card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* All image blocks */
-.centre-wrap,
-.side {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  overflow: hidden;
-  border-radius: 12px;
-}
-
-/* Centre */
-.centre-wrap {
-  left: 50%;
-  width: var(--center-width);
-  height: 100%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-
-.left-wrap {
-  left: calc(50% - var(--center-width) / 2 - var(--side-width) + var(--overlap));
-  width: var(--side-width);
-  height: 82%;
-}
-
-.right-wrap {
-  left: calc(50% + var(--center-width) / 2 - var(--overlap));
-  width: var(--side-width);
-  height: 82%;
-}
-
-/* Images */
-.centre-wrap img,
-.side img {
+.centre-wrap video,
+.side video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-:root {
-  --center-width: clamp(260px, 32vw, 520px);
-  --side-width: calc(var(--center-width) * 0.75);
-  --overlap: calc(var(--center-width) * 0.28);
-}
-
-.visual-set {
-  position: relative;
-  width: 100%;
-  height: 65vh;
-  max-height: 650px;
-}
-
-/* Title */
-
-.title-layer {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 10;
-}
-
-#dynamicTitle {
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  color: #fff;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  transition: opacity 0.3s ease;
-}
-
-/* Arrows */
-
-.side-nav {
-  position: fixed;
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
-  z-index: 50;
-}
-
-.side-nav button {
-  background: none;
-  border: none;
-  font-size: 2.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  color: #fff;
-}
-
-/* Progress */
-
-.progress-track {
-  position: fixed;
-  left: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 220px;
-  width: 3px;
-  background: rgba(255,255,255,0.25);
-  z-index: 50;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 0%;
-  background: #fff;
-}
-
-/* Disable selection */
-
-.hero,
-.hero * {
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Hero page only */
-.hero {
-  position: relative;
 }
 </style>
