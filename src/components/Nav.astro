@@ -1,9 +1,7 @@
 ---
 // import Icon, { Props as IconProps } from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import Effect from "../effects/Effect.astro";
 import {nav} from '../data/content';
-import EffectSwitch from "../effects/EffectSwitch.astro";
 import NavMobile from "../components/NavMobile.astro";
 ---
 
@@ -18,7 +16,6 @@ import NavMobile from "../components/NavMobile.astro";
 							draggable="false">
 					</figure>
 				</a>
-				<EffectSwitch  transition:persist/>
 			</div>
 		</div>
 		<div id="menu-content">
@@ -51,7 +48,6 @@ import NavMobile from "../components/NavMobile.astro";
 		</div>
 	</div>
 </nav>
-<Effect transition:persist/>
 <script>
 	class MenuButton extends HTMLElement {
 		constructor() {

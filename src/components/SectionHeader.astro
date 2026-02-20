@@ -87,6 +87,7 @@ const { tag, description } = Astro.props;
         }
     }
     &-desc{
+        display: none;
         max-width: 480px;
         margin:24px auto 24px;
         text-align: center;
@@ -117,17 +118,19 @@ const { tag, description } = Astro.props;
 }
 .title-tag{
     display: inline-block;
-    font-size: 13px;
+    font-size: 60px;
     line-height: 1;
     margin:16px auto 24px;
-    border:1px solid var(--color-700);
+    border:0px solid var(--color-700);
     border-radius: 36px;
     padding:8px 22px 4px;
     color: var(--color-300);
     text-align: center;
-    font-family: var(--font-type);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 1px;
+    font-family: "Pridi", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 .section-show .card-item{
     width: 100%;
@@ -165,6 +168,7 @@ const { tag, description } = Astro.props;
 
 <style is:global lang="scss">
     .title-svg{
+        display: none;
         width: auto;
         height: 72px;
 

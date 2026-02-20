@@ -1,0 +1,486 @@
+---
+const slides = [
+  {
+    bg: "#aeb7ac",
+    title: "Motion Graphics",
+    link: "/showcase?group=motiongraphics",
+    media: [
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602186/slide1-left_m83yus"
+      },
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_1600/v1771602196/slide1-center_hobovn"
+      },
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602180/slide1-right_e60rvk"
+      }
+    ]
+  },
+  {
+    bg: "#8fa2b5",
+    title: "Graphic Design",
+    link: "/showcase?group=graphicdesign",
+    media: [
+      {
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771602373/slide2-left_h48xs9"
+      },
+      {
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_1600/v1771603361/slide2_sds4gx"
+      },
+      {
+        type: "video",
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771602338/slide2-right_gp1kzo"
+      }
+    ]
+  },
+  {
+    bg: "#bfa089",
+    title: "Commercial Works",
+    link: "/showcase?group=commercialworks",
+    media: [
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602174/slide3-left_hpoxon"
+      },
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_1600/v1771602189/slide3-center_hlvobz"
+      },
+      {
+        type: "image",
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602180/slide3-right_n4gqzk"
+      }
+    ]
+  }
+];
+---
+
+<section class="hero">
+  <div class="slider" id="slider">
+    {slides.map((slide) => (
+      <div
+        class="panel"
+        data-bg={slide.bg}
+        data-title={slide.title}
+        data-link={slide.link}
+      >
+        <a href={slide.link} class="card-link">
+          <div class="visual-set">
+
+            <div class="side left-wrap">
+              <img src={slide.images[0]} draggable="false" />
+            </div>
+
+            <div class="centre-wrap">
+              <img src={slide.images[1]} draggable="false" />
+            </div>
+
+            <div class="side right-wrap">
+              <img src={slide.images[2]} draggable="false" />
+            </div>
+
+          </div>
+        </a>
+      </div>
+    ))}
+  </div>
+
+  <div class="title-layer">
+    <h2 id="dynamicTitle"></h2>
+  </div>
+
+  <div class="progress-track">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="side-nav">
+    <button id="upBtn">↑</button>
+    <button id="downBtn">↓</button>
+  </div>
+</section>
+
+<script>
+const slider = document.getElementById("slider");
+let panels = Array.from(document.querySelectorAll(".panel"));
+const total = panels.length;
+
+let current = 1;
+let startY = 0;
+let offset = 0;
+let isDragging = false;
+let dragMoved = false;
+let wheelLock = false;
+let autoInterval;
+const autoplayDelay = 7000;
+
+const dynamicTitle = document.getElementById("dynamicTitle");
+const progressBar = document.querySelector(".progress-bar");
+const upBtn = document.getElementById("upBtn");
+const downBtn = document.getElementById("downBtn");
+
+/* Infinite Loop */
+
+const firstClone = panels[0].cloneNode(true);
+const lastClone = panels[total - 1].cloneNode(true);
+
+slider.appendChild(firstClone);
+slider.insertBefore(lastClone, slider.firstChild);
+
+panels = Array.from(document.querySelectorAll(".panel"));
+
+function updatePosition(animate = true) {
+  slider.style.transition = animate
+    ? "transform 0.7s cubic-bezier(.22,1,.36,1)"
+    : "none";
+
+  slider.style.transform =
+    `translateY(${-current * window.innerHeight + offset}px)`;
+}
+
+function fixLoop() {
+  if (current === 0) {
+    slider.style.transition = "none";
+    current = total;
+    updatePosition(false);
+  }
+  if (current === total + 1) {
+    slider.style.transition = "none";
+    current = 1;
+    updatePosition(false);
+  }
+}
+
+/* Content */
+
+function setActiveContent() {
+  const active = panels[current];
+  const bg = active.dataset.bg;
+  const title = active.dataset.title;
+
+  dynamicTitle.style.opacity = 0;
+
+  setTimeout(() => {
+    dynamicTitle.textContent = title;
+    dynamicTitle.style.opacity = 1;
+  }, 200);
+
+  document.body.style.backgroundColor = bg;
+}
+
+/* Navigation */
+
+function goNext() {
+  if (wheelLock) return;
+  wheelLock = true;
+
+  current++;
+  setActiveContent();
+  updatePosition(true);
+
+  setTimeout(() => {
+    fixLoop();
+    wheelLock = false;
+  }, 700);
+
+  restartAutoplay();
+}
+
+function goPrev() {
+  if (wheelLock) return;
+  wheelLock = true;
+
+  current--;
+  setActiveContent();
+  updatePosition(true);
+
+  setTimeout(() => {
+    fixLoop();
+    wheelLock = false;
+  }, 700);
+
+  restartAutoplay();
+}
+
+upBtn.onclick = goPrev;
+downBtn.onclick = goNext;
+
+/* Drag */
+
+document.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  dragMoved = false;
+  startY = e.clientY;
+  slider.style.transition = "none";
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  const delta = e.clientY - startY;
+  if (Math.abs(delta) > 5) dragMoved = true;
+
+  offset = delta * 0.9;
+  updatePosition(false);
+});
+
+document.addEventListener("mouseup", () => {
+  if (!isDragging) return;
+  isDragging = false;
+
+  const threshold = window.innerHeight / 6;
+
+  if (offset > threshold) goPrev();
+  else if (offset < -threshold) goNext();
+  else updatePosition(true);
+
+  offset = 0;
+});
+
+document.addEventListener("click", (e) => {
+  if (dragMoved) e.preventDefault();
+});
+
+/* Wheel */
+
+document.addEventListener("wheel", (e) => {
+  if (wheelLock) return;
+
+  if (e.deltaY > 0) goNext();
+  else goPrev();
+});
+
+/* Autoplay */
+
+function startAutoplay() {
+  autoInterval = setInterval(goNext, autoplayDelay);
+  animateProgress();
+}
+
+function restartAutoplay() {
+  clearInterval(autoInterval);
+  resetProgress();
+  startAutoplay();
+}
+
+/* Progress */
+
+function animateProgress() {
+  progressBar.style.transition = "none";
+  progressBar.style.height = "0%";
+
+  setTimeout(() => {
+    progressBar.style.transition =
+      `height ${autoplayDelay}ms linear`;
+    progressBar.style.height = "100%";
+  }, 50);
+}
+
+function resetProgress() {
+  progressBar.style.transition = "none";
+  progressBar.style.height = "0%";
+}
+
+/* Init */
+
+updatePosition(false);
+setActiveContent();
+startAutoplay();
+</script>
+
+<style>
+.hero {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.slider {
+  width: 100%;
+}
+
+.panel {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0; /* important */
+  position: relative;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  aspect-ratio: 4 / 5;
+}
+
+.card.center {
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 3;
+}
+
+.card.left {
+  left: calc(50% - var(--card-width));
+  transform: translate(-50%, -50%) scale(0.85);
+  z-index: 2;
+}
+
+.card.right {
+  left: calc(50% + var(--card-width));
+  transform: translate(-50%, -50%) scale(0.85);
+  z-index: 2;
+}
+
+.card-link {
+  width: 100%;
+  height: 60vh;
+  max-height: 600px;
+  position: relative;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* All image blocks */
+.centre-wrap,
+.side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Centre */
+.centre-wrap {
+  left: 50%;
+  width: var(--center-width);
+  height: 100%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.left-wrap {
+  left: calc(50% - var(--center-width) / 2 - var(--side-width) + var(--overlap));
+  width: var(--side-width);
+  height: 82%;
+}
+
+.right-wrap {
+  left: calc(50% + var(--center-width) / 2 - var(--overlap));
+  width: var(--side-width);
+  height: 82%;
+}
+
+/* Images */
+.centre-wrap img,
+.side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+:root {
+  --center-width: clamp(260px, 32vw, 520px);
+  --side-width: calc(var(--center-width) * 0.75);
+  --overlap: calc(var(--center-width) * 0.28);
+}
+
+.visual-set {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  max-height: 650px;
+}
+
+/* Title */
+
+.title-layer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#dynamicTitle {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  transition: opacity 0.3s ease;
+}
+
+/* Arrows */
+
+.side-nav {
+  position: fixed;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  z-index: 50;
+}
+
+.side-nav button {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Progress */
+
+.progress-track {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 220px;
+  width: 3px;
+  background: rgba(255,255,255,0.25);
+  z-index: 50;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0%;
+  background: #fff;
+}
+
+/* Disable selection */
+
+.hero,
+.hero * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Hero page only */
+.hero {
+  position: relative;
+}
+</style>

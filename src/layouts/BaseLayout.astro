@@ -7,14 +7,15 @@ interface Props {
 	title?: string | undefined;
 	description?: string | undefined;
 	keywords?: string | undefined;
+	bodyClass?: string;
 }
-const { title, description,keywords } = Astro.props;
+const { title, description,keywords, bodyClass } = Astro.props;
 ---
 <html lang=en>
 	<head>
 		<MainHead title={title} description={description}  keywords={keywords} />
 	</head>
-	<body class="_body">
+	<body class={`_body ${bodyClass ?? ''}`}>
 		<div class="">
 			<Nav transition:persist/>
 			<slot />
