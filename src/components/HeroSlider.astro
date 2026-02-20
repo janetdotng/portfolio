@@ -84,6 +84,7 @@ let current = 0;
 let startY = 0;
 let offset = 0;
 let isDragging = false;
+let dragMoved = false;
 let wheelLock = false;
 let autoInterval;
 const autoplayDelay = 7000;
@@ -93,7 +94,7 @@ const progressBar = document.getElementById("progressBar");
 const upBtn = document.getElementById("upBtn");
 const downBtn = document.getElementById("downBtn");
 
-/* --- Infinite Loop Setup --- */
+/* ---------- Infinite Loop Setup ---------- */
 const firstClone = panels[0].cloneNode(true);
 const lastClone = panels[total - 1].cloneNode(true);
 slider.appendChild(firstClone);
@@ -138,10 +139,11 @@ function setActiveContent() {
   document.body.style.backgroundColor = bg || "#000";
 }
 
-/* --- Navigation --- */
+/* ---------- Navigation ---------- */
 function goNext() {
   if (wheelLock) return;
   wheelLock = true;
+
   current++;
   setActiveContent();
   updatePosition(true);
@@ -157,6 +159,7 @@ function goNext() {
 function goPrev() {
   if (wheelLock) return;
   wheelLock = true;
+
   current--;
   setActiveContent();
   updatePosition(true);
@@ -172,16 +175,23 @@ function goPrev() {
 upBtn.onclick = goPrev;
 downBtn.onclick = goNext;
 
-/* --- Drag --- */
+/* ---------- Drag + Protection ---------- */
 document.addEventListener("mousedown", (e) => {
   isDragging = true;
+  dragMoved = false;
   startY = e.clientY;
   slider.style.transition = "none";
 });
 
 document.addEventListener("mousemove", (e) => {
   if (!isDragging) return;
+
   const delta = e.clientY - startY;
+
+  if (Math.abs(delta) > 5) {
+    dragMoved = true;
+  }
+
   offset = delta * 0.9;
   updatePosition(false);
 });
@@ -189,29 +199,42 @@ document.addEventListener("mousemove", (e) => {
 document.addEventListener("mouseup", () => {
   if (!isDragging) return;
   isDragging = false;
+
   const threshold = window.innerHeight / 6;
 
   if (offset > threshold) goPrev();
   else if (offset < -threshold) goNext();
-  else updatePosition(true);
+  else {
+    offset = 0;
+    updatePosition(true);
+  }
 
   offset = 0;
 });
 
-/* --- Wheel --- */
+document.addEventListener("click", (e) => {
+  if (dragMoved) {
+    e.preventDefault();
+    e.stopPropagation();
+    dragMoved = false;
+  }
+});
+
+/* ---------- Wheel ---------- */
 document.addEventListener("wheel", (e) => {
   if (wheelLock) return;
   if (e.deltaY > 0) goNext();
   else goPrev();
 });
 
-/* --- Autoplay + Progress --- */
+/* ---------- Autoplay + Countdown ---------- */
 function animateProgress() {
   progressBar.style.transition = "none";
   progressBar.style.height = "0%";
 
   setTimeout(() => {
-    progressBar.style.transition = `height ${autoplayDelay}ms linear`;
+    progressBar.style.transition =
+      `height ${autoplayDelay}ms linear`;
     progressBar.style.height = "100%";
   }, 50);
 }
@@ -227,6 +250,7 @@ function restartAutoplay() {
   startAutoplay();
 }
 
+/* ---------- Init ---------- */
 updatePosition(false);
 setActiveContent();
 startAutoplay();
@@ -250,53 +274,6 @@ startAutoplay();
   justify-content: center;
 }
 
-.carousel-track {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0; /* important */
-  position: relative;
-}
-
-.card {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  aspect-ratio: 4 / 5;
-}
-
-.card.center {
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  z-index: 3;
-}
-
-.card.left {
-  left: calc(50% - var(--card-width));
-  transform: translate(-50%, -50%) scale(0.85);
-  z-index: 2;
-}
-
-.card.right {
-  left: calc(50% + var(--card-width));
-  transform: translate(-50%, -50%) scale(0.85);
-  z-index: 2;
-}
-
-.card-link {
-  width: 100%;
-  height: 60vh;
-  max-height: 600px;
-  position: relative;
-}
-
-.card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* All image blocks */
 .centre-wrap,
 .side {
   position: absolute;
@@ -306,7 +283,6 @@ startAutoplay();
   border-radius: 12px;
 }
 
-/* Centre */
 .centre-wrap {
   left: 50%;
   width: var(--center-width);
@@ -327,9 +303,10 @@ startAutoplay();
   height: 82%;
 }
 
-/* Images */
 .centre-wrap img,
-.side img {
+.side img,
+.centre-wrap video,
+.side video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -349,8 +326,6 @@ startAutoplay();
   max-height: 650px;
 }
 
-/* Title */
-
 .title-layer {
   position: fixed;
   inset: 0;
@@ -368,8 +343,6 @@ startAutoplay();
   letter-spacing: -0.03em;
   transition: opacity 0.3s ease;
 }
-
-/* Arrows */
 
 .side-nav {
   position: fixed;
@@ -391,8 +364,6 @@ startAutoplay();
   color: #fff;
 }
 
-/* Progress */
-
 .progress-track {
   position: fixed;
   left: 40px;
@@ -410,25 +381,10 @@ startAutoplay();
   background: #fff;
 }
 
-/* Disable selection */
-
 .hero,
 .hero * {
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
-}
-
-/* Hero page only */
-.hero {
-  position: relative;
-}
-
-.centre-wrap video,
-.side video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 }
 </style>
