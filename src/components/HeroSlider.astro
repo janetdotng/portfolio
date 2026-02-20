@@ -7,15 +7,15 @@ const slides = [
     media: [
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602186/slide1-left_m83yus"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602186/slide1-left_m83yus.jpg"
       },
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602196/slide1-center_hobovn"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_1600/v1771602196/slide1-center_hobovn.jpg"
       },
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602180/slide1-right_e60rvk"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602180/slide1-right_e60rvk.jpg"
       }
     ]
   },
@@ -26,15 +26,15 @@ const slides = [
     media: [
       {
         type: "video",
-        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_600/v1771605614/slide2-left_jsu3wr"
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771605614/slide2-left_jsu3wr.mp4"
       },
       {
         type: "video",
-        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771605785/slide2-center_hoxzyz"
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_1600/v1771605785/slide2-center_hoxzyz.mp4"
       },
       {
         type: "video",
-        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_600/v1771605719/slide2-right_qrwz87"
+        src: "https://res.cloudinary.com/dwj5kjslu/video/upload/f_auto,q_auto,w_900/v1771605719/slide2-right_qrwz87.mp4"
       }
     ]
   },
@@ -45,15 +45,15 @@ const slides = [
     media: [
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602174/slide3-left_hpoxon"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602174/slide3-left_hpoxon.jpg"
       },
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602189/slide3-center_hlvobz"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_1600/v1771602189/slide3-center_hlvobz.jpg"
       },
       {
         type: "image",
-        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_600/v1771602180/slide3-right_n4gqzk"
+        src: "https://res.cloudinary.com/dwj5kjslu/image/upload/f_auto,q_auto,w_900/v1771602180/slide3-right_n4gqzk.jpg"
       }
     ]
   }
@@ -62,7 +62,7 @@ const slides = [
 
 <section class="hero">
   <div class="slider" id="slider">
-    {slides.map((slide) => (
+    {slides.map((slide, slideIndex) => (
       <div
         class="panel"
         data-bg={slide.bg}
@@ -72,35 +72,28 @@ const slides = [
         <a href={slide.link} class="card-link">
           <div class="visual-set">
 
-            <div class="side left-wrap">
-              {slide.media[0].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
-                  <source src={slide.media[0].src} type="video/mp4" />
-                </video>
-              ) : (
-                <img src={slide.media[0].src} loading="eager" draggable="false" />
-              )}
-            </div>
-
-            <div class="centre-wrap">
-              {slide.media[1].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
-                  <source src={slide.media[1].src} type="video/mp4" />
-                </video>
-              ) : (
-                <img src={slide.media[1].src} loading="eager" draggable="false" />
-              )}
-            </div>
-
-            <div class="side right-wrap">
-              {slide.media[2].type === "video" ? (
-                <video autoplay muted loop playsinline preload="auto" disablepictureinpicture>
-                  <source src={slide.media[2].src} type="video/mp4" />
-                </video>
-              ) : (
-                <img src={slide.media[2].src} loading="eager" draggable="false" />
-              )}
-            </div>
+            {slide.media.map((item, i) => (
+              <div class={i === 1 ? "centre-wrap" : `side ${i === 0 ? "left-wrap" : "right-wrap"}`}>
+                {item.type === "video" ? (
+                  <video
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    preload="auto"
+                  >
+                    <source src={item.src} type="video/mp4" />
+                  </video>
+                ) : (
+                  <img
+                    src={item.src}
+                    loading={slideIndex === 0 ? "eager" : "lazy"}
+                    fetchpriority={slideIndex === 0 ? "high" : "auto"}
+                    draggable="false"
+                  />
+                )}
+              </div>
+            ))}
 
           </div>
         </a>
@@ -110,10 +103,6 @@ const slides = [
 
   <div class="title-layer">
     <h2 id="dynamicTitle"></h2>
-  </div>
-
-  <div class="progress-track">
-    <div class="progress-bar"></div>
   </div>
 
   <div class="side-nav">
@@ -127,26 +116,16 @@ const slider = document.getElementById("slider");
 let panels = Array.from(document.querySelectorAll(".panel"));
 const total = panels.length;
 
-let current = 1;
-let offset = 0;
-let wheelLock = false;
+let current = 0;
 let autoInterval;
 const autoplayDelay = 7000;
 
 const dynamicTitle = document.getElementById("dynamicTitle");
-const progressBar = document.querySelector(".progress-bar");
 const upBtn = document.getElementById("upBtn");
 const downBtn = document.getElementById("downBtn");
 
-const firstClone = panels[0].cloneNode(true);
-const lastClone = panels[total - 1].cloneNode(true);
-
-slider.appendChild(firstClone);
-slider.insertBefore(lastClone, slider.firstChild);
-
-panels = Array.from(document.querySelectorAll(".panel"));
-
 function updatePosition(animate = true) {
+  if (!slider) return;
   slider.style.transition = animate
     ? "transform 0.7s cubic-bezier(.22,1,.36,1)"
     : "none";
@@ -155,68 +134,58 @@ function updatePosition(animate = true) {
     `translateY(${-current * window.innerHeight}px)`;
 }
 
-function fixLoop() {
-  if (current === 0) {
-    slider.style.transition = "none";
-    current = total;
-    updatePosition(false);
-  }
-  if (current === total + 1) {
-    slider.style.transition = "none";
-    current = 1;
-    updatePosition(false);
-  }
-}
-
 function setActiveContent() {
   const active = panels[current];
-  const bg = active.dataset.bg;
-  const title = active.dataset.title;
+  if (!active || !dynamicTitle) return;
+
+  const bg = active.getAttribute("data-bg");
+  const title = active.getAttribute("data-title");
 
   dynamicTitle.style.opacity = "0";
 
   setTimeout(() => {
-    dynamicTitle.textContent = title;
+    dynamicTitle.textContent = title || "";
     dynamicTitle.style.opacity = "1";
   }, 200);
 
-  document.body.style.backgroundColor = bg;
+  document.body.style.backgroundColor = bg || "#000";
+}
+
+function preloadNextSlide() {
+  const nextIndex = (current + 1) % total;
+  const nextPanel = panels[nextIndex];
+  if (!nextPanel) return;
+
+  const media = nextPanel.querySelectorAll("img, video");
+
+  media.forEach(el => {
+    if (el.tagName === "VIDEO") {
+      el.load();
+    } else {
+      const img = new Image();
+      img.src = el.src;
+    }
+  });
 }
 
 function goNext() {
-  if (wheelLock) return;
-  wheelLock = true;
-
-  current++;
+  current = (current + 1) % total;
   setActiveContent();
   updatePosition(true);
-
-  setTimeout(() => {
-    fixLoop();
-    wheelLock = false;
-  }, 700);
-
+  preloadNextSlide();
   restartAutoplay();
 }
 
 function goPrev() {
-  if (wheelLock) return;
-  wheelLock = true;
-
-  current--;
+  current = (current - 1 + total) % total;
   setActiveContent();
   updatePosition(true);
-
-  setTimeout(() => {
-    fixLoop();
-    wheelLock = false;
-  }, 700);
-
+  preloadNextSlide();
   restartAutoplay();
 }
 
-upBtn.onclick = goPrev;
-downBtn.onclick = goNext;
+upBtn && (upBtn.onclick = goPrev);
+downBtn && (downBtn.onclick = goNext);
 
 function startAutoplay() {
   autoInterval = setInterval(goNext, autoplayDelay);
@@ -230,14 +199,5 @@ function restartAutoplay() {
 updatePosition(false);
 setActiveContent();
 startAutoplay();
+preloadNextSlide();
 </script>
-
-<style>
-.centre-wrap video,
-.side video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-</style>

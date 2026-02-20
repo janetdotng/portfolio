@@ -14,16 +14,6 @@ const { title, description,keywords, bodyClass } = Astro.props;
 <html lang=en>
 	<head>
 		<MainHead title={title} description={description}  keywords={keywords} />
-		<!-- Preload ALL slide visuals -->
-  {slides.map(slide =>
-    slide.media.map(item => (
-      item.type === "video" ? (
-        <link rel="preload" as="video" href={item.src} />
-      ) : (
-        <link rel="preload" as="image" href={item.src} />
-      )
-    ))
-  )}
 	</head>
 	<body class={`_body ${bodyClass ?? ''}`}>
 		<div class="">
