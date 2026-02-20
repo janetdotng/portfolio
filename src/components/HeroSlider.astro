@@ -201,3 +201,196 @@ setActiveContent();
 startAutoplay();
 preloadNextSlide();
 </script>
+
+<style>
+.hero {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.slider {
+  width: 100%;
+}
+
+.panel {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0; /* important */
+  position: relative;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  aspect-ratio: 4 / 5;
+}
+
+.card.center {
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  z-index: 3;
+}
+
+.card.left {
+  left: calc(50% - var(--card-width));
+  transform: translate(-50%, -50%) scale(0.85);
+  z-index: 2;
+}
+
+.card.right {
+  left: calc(50% + var(--card-width));
+  transform: translate(-50%, -50%) scale(0.85);
+  z-index: 2;
+}
+
+.card-link {
+  width: 100%;
+  height: 60vh;
+  max-height: 600px;
+  position: relative;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* All image blocks */
+.centre-wrap,
+.side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Centre */
+.centre-wrap {
+  left: 50%;
+  width: var(--center-width);
+  height: 100%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.left-wrap {
+  left: calc(50% - var(--center-width) / 2 - var(--side-width) + var(--overlap));
+  width: var(--side-width);
+  height: 82%;
+}
+
+.right-wrap {
+  left: calc(50% + var(--center-width) / 2 - var(--overlap));
+  width: var(--side-width);
+  height: 82%;
+}
+
+/* Images */
+.centre-wrap img,
+.side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+:root {
+  --center-width: clamp(260px, 32vw, 520px);
+  --side-width: calc(var(--center-width) * 0.75);
+  --overlap: calc(var(--center-width) * 0.28);
+}
+
+.visual-set {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  max-height: 650px;
+}
+
+/* Title */
+
+.title-layer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#dynamicTitle {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  transition: opacity 0.3s ease;
+}
+
+/* Arrows */
+
+.side-nav {
+  position: fixed;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  z-index: 50;
+}
+
+.side-nav button {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Progress */
+
+.progress-track {
+  position: fixed;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 220px;
+  width: 3px;
+  background: rgba(255,255,255,0.25);
+  z-index: 50;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0%;
+  background: #fff;
+}
+
+/* Disable selection */
+
+.hero,
+.hero * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Hero page only */
+.hero {
+  position: relative;
+}
+</style>
