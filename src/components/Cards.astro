@@ -19,7 +19,7 @@ const cards = entries
     coverAlt: entry.data.coverAlt ?? entry.data.title,
     description: entry.data.description ?? '',
     category: (entry.data.category ?? []).map(c => c.toLowerCase()),
-    tag: entry.data.tag ?? '',
+   tags: entry.data.tags ?? [],
     date: entry.data.publishDate.toISOString(),
     externalUrl: entry.data.externalUrl ?? null,
     index: index + 1
@@ -48,7 +48,7 @@ const count = cards.length;
 >
           <div class="card-header">
               <div class="card-type type">
-                {card.tag && <span class="type-tag">- {card.tag} -</span>}
+                {card.tags?.[0] && <span class="type-tag">- {card.tags[0]} -</span>}
               </div>
               <div class="card-type type">
                 <span class="type-tag">(0{card.index})</span>

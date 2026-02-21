@@ -1,11 +1,21 @@
 ---
-import { getEntryBySlug } from 'astro:content';
 import DetailPostLayout from '../../layouts/DetailPostLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('showcase');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+  }));
+}
 
 const { slug } = Astro.params;
-const entry = await getEntryBySlug('showcase', slug);
+const entries = await getCollection('showcase');
+const entry = entries.find((e) => e.slug === slug);
 
-if (!entry) throw new Error('Not found');
+if (!entry) {
+  throw new Error(`Showcase entry not found: ${slug}`);
+}
 
 const { Content } = await entry.render();
 ---
