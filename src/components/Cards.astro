@@ -39,7 +39,7 @@ const count = cards.length;
 
       {cards.map((card) => (
         <div
-          class="card-item col-xs-1a col-md-2a col-lg-3a col-xxl-4a"
+          class="card-item"
           data-groups={JSON.stringify(card.category)}
           data-date-created={card.date}
           data-title={card.title}
@@ -51,22 +51,25 @@ const count = cards.length;
 >
 
             <div class="card-body">
-              <img
-  class="card-figure__img"
-  src={card.cover}
-  loading="lazy"
-  alt={card.coverAlt}
-/>
-            </div>
+  <div class="card-media">
+    <img
+      src={card.cover}
+      loading="lazy"
+      alt={card.coverAlt}
+    />
+  </div>
+</div>
 
             <div class="card-footer">
               <div class="card-detail">
                 <div class="card-name card-item__title">
                   {card.title}
                 </div>
-                <div class="card-info">
-                  {card.description}
-                </div>
+{card.description && card.description !== card.title && (
+  <div class="card-info">
+    {card.description}
+  </div>
+)}
               </div>
             </div>
 

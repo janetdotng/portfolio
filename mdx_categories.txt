@@ -1,0 +1,8 @@
+arts-and-crafts
+commercial
+graphic-design
+illustrations
+live-action
+motion-graphics
+photography
+ux-ui
