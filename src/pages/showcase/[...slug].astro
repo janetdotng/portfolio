@@ -18,22 +18,35 @@ if (!entry) {
 }
 
 const { Content } = await entry.render();
+
+const SMALL_WORDS = new Set(['and','or','the','of','to','in','on','for','with','a','an']);
+
+const titleCase = (s: string) =>
+  s
+    .replace(/[-_]/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(' ')
+    .filter(Boolean)
+    .map((w, i) => {
+      const lw = w.toLowerCase();
+      if (i > 0 && SMALL_WORDS.has(lw)) return lw;
+      return lw.charAt(0).toUpperCase() + lw.slice(1);
+    })
+    .join(' ');
 ---
 
-<DetailPostLayout
-  title={entry.data.title}
-  description={entry.data.description}
->
+<DetailPostLayout ...>
+  <header class="post-header">
+    <h1>{entry.data.title}</h1>
+    {entry.data.intro && <p class="post-intro">{entry.data.intro}</p>}
+    {/* optional: categories row here */}
+  </header>
+
   <div class="post-grid">
-
     <main class="post-main">
-      <h1>{entry.data.title}</h1>
-
-      {entry.data.intro && (
-        <p class="post-intro">{entry.data.intro}</p>
-      )}
-
+	<div class="post-content">
       <Content />
+	  </div>
     </main>
 
     <aside class="post-aside">
@@ -51,18 +64,46 @@ const { Content } = await entry.render();
         </div>
       )}
 
-      {entry.data.tags && (
-        <div class="meta-block">
-          <h4>Tags</h4>
-          <p>{entry.data.tags.join(', ')}</p>
-        </div>
-      )}
+      {entry.data.category?.length ? (
+  <div class="category-row">
+    {entry.data.category.map(c => {
+      const group = c.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return (
+        <a class="cat-pill" href={`/showcase?group=${group}`}>
+          {titleCase(c)}
+        </a>
+      );
+    })}
+  </div>
+) : null}
     </aside>
 
   </div>
 </DetailPostLayout>
 
 <style>
+
+.post-content :global(p) {
+  line-height: 1.7;
+  margin: 0 0 1.1em;
+}
+
+.post-content :global(h2) {
+  margin: 2.2em 0 0.9em;
+  text-align: center; /* if you want */
+}
+
+.post-content :global(h3) {
+  margin: 1.8em 0 0.8em;
+}
+
+.post-content :global(figure),
+.post-content :global(img) {
+  margin: 1.8em auto;
+  display: block;
+  max-width: 100%;
+}
+
 .post-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;

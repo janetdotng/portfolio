@@ -5,6 +5,9 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('showcase'))
   .filter(entry => entry.slug !== 'article-template');
 
+  const normaliseGroup = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]/g, ''); // removes hyphens/spaces
+
 const cards = entries
   .sort((a, b) => {
     if (a.data.featured && !b.data.featured) return -1;
@@ -18,7 +21,7 @@ const cards = entries
     cover: entry.data.cover,
     coverAlt: entry.data.coverAlt ?? entry.data.title,
     description: entry.data.description ?? '',
-    category: (entry.data.category ?? []).map(c => c.toLowerCase()),
+    category: (entry.data.category ?? []).map(normaliseGroup),
    tags: entry.data.tags ?? [],
     date: entry.data.publishDate.toISOString(),
     externalUrl: entry.data.externalUrl ?? null,
@@ -46,14 +49,6 @@ const count = cards.length;
   class="card-wrapper"
   target={card.externalUrl ? "_blank" : "_self"}
 >
-          <div class="card-header">
-              <div class="card-type type">
-                {card.tags?.[0] && <span class="type-tag">- {card.tags[0]} -</span>}
-              </div>
-              <div class="card-type type">
-                <span class="type-tag">(0{card.index})</span>
-              </div>
-            </div>
 
             <div class="card-body">
               <img
