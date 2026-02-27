@@ -1,3 +1,6 @@
+.env
+.cld_resource_cache.json
+
 # build output
 dist/
 # generated types

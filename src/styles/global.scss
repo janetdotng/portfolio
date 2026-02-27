@@ -1072,21 +1072,140 @@ display: none !important;
   color: #E1306C;
 }
 
-.card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 32px;
-}
+/* Thumbnail */
 
-.card-media {
-  aspect-ratio: 3 / 2; /* change to 4 / 3 if preferred */
+.card-figure {
+  width: 100%;
   overflow: hidden;
-  background: #111;
+  border-radius: 12px;
 }
 
-.card-media img {
+.card-figure img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Pattern repeats every 6 items */
+
+/* A = square */
+.card-item:nth-child(6n + 1) .card-figure,
+.card-item:nth-child(6n + 3) .card-figure,
+.card-item:nth-child(6n + 5) .card-figure {
+  aspect-ratio: 1 / 1;
+}
+
+/* B = 5:4 */
+.card-item:nth-child(6n + 2) .card-figure,
+.card-item:nth-child(6n + 4) .card-figure,
+.card-item:nth-child(6n + 6) .card-figure {
+  aspect-ratio: 5 / 4;
+}
+
+.card-list {
+  position: relative;
+  margin: 32px auto 0;
+  width: 100%;
+}
+
+/* Title spacing and truncation */
+.card-footer {
+  margin-top: 12px; /* increase title spacing slightly */
+  height: auto;
+  min-height: calc(1.3em * 2);   // reserve 2 lines
+}
+
+.card-name {
+  text-align: center;
+  padding: 0 12px;
+  line-height: 1.3;
+  font-size: 16px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  min-height: calc(1.3em * 2);   // key: same height even if 1 line
+  
+}
+
+/* Optional: reduce excessive overall horizontal padding ONLY on showcase page
+   If your Showcase page lives inside .section.hero .container, this will help. */
+.section.hero .container {
+  max-width: 1200px; /* adjust if you want wider */
+}
+
+.js-shuffle-sizer {
+  width: 100%;
+}
+
+/* ===== SHUFFLE MASONRY LAYOUT ===== */
+
+#js-shuffle {
+  position: relative;
+  margin: 40px -12px 0;
+}
+
+/* 3 columns desktop */
+.card-item,
+.my-sizer-element {
+  width: 33.333333%;
+}
+
+/* Gutters */
+.card-item {
+  padding: 0 12px;
+  margin-top: 12px;
+  margin-bottom: 8px; /* instead of 24px */
+}
+
+/* Tablet: 2 columns */
+@media (max-width: 1023px) {
+  .card-item,
+  .my-sizer-element {
+    width: 50%;
+  }
+
+  .card-item {
+    padding: 0 10px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Mobile: 1 column */
+@media (max-width: 767px) {
+  .card-item,
+  .my-sizer-element {
+    width: 100%;
+  }
+
+  .card-item {
+    padding: 0 8px;
+    margin-bottom: 18px;
+  }
+}
+
+/* Hide sizer */
+.my-sizer-element {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ===== Showcase grid container adjustment ===== */
+
+.section.card .card-shell {
+  max-width: 1400px;      /* optional: control overall width */
+  margin: 0 auto;
+  padding: 0 24px;        /* replace 108px with reasonable gutter */
+}
+
+/* Remove inner padding effect */
+.section.card .inner,
+.section.card .inner--xxl {
+  padding-left: 0;
+  padding-right: 0;
 }

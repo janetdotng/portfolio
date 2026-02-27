@@ -3,10 +3,10 @@ import Filter from '../components/Filter.astro';
 import { getCollection } from 'astro:content';
 
 const entries = (await getCollection('showcase'))
-  .filter(entry => entry.slug !== 'article-template');
+  .filter((entry) => entry.slug !== 'article-template');
 
-  const normaliseGroup = (s: string) =>
-  s.toLowerCase().replace(/[^a-z0-9]/g, ''); // removes hyphens/spaces
+const normaliseGroup = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 const cards = entries
   .sort((a, b) => {
@@ -14,18 +14,15 @@ const cards = entries
     if (!a.data.featured && b.data.featured) return 1;
     return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
   })
-  .map((entry, index) => ({
+  .map((entry) => ({
     id: entry.slug,
     slug: entry.slug,
     title: entry.data.title,
     cover: entry.data.cover,
     coverAlt: entry.data.coverAlt ?? entry.data.title,
-    description: entry.data.description ?? '',
     category: (entry.data.category ?? []).map(normaliseGroup),
-   tags: entry.data.tags ?? [],
     date: entry.data.publishDate.toISOString(),
     externalUrl: entry.data.externalUrl ?? null,
-    index: index + 1
   }));
 
 const count = cards.length;
@@ -34,8 +31,10 @@ const count = cards.length;
 <Filter count={count} />
 
 <div class="section card">
-  <div class="js-shuffle-sizer">
-    <div class="card-list my-shuffle-container" id="js-shuffle">
+  <div class="card-shell">
+    <div class="cards-masonry my-shuffle-container" id="js-shuffle">
+      <!-- IMPORTANT: sizer MUST be inside the shuffle container and MUST NOT carry grid utility classes -->
+      <div class="my-sizer-element" aria-hidden="true"></div>
 
       {cards.map((card) => (
         <div
@@ -45,208 +44,132 @@ const count = cards.length;
           data-title={card.title}
         >
           <a
-  href={card.externalUrl ? card.externalUrl : `/showcase/${card.slug}`}
-  class="card-wrapper"
-  target={card.externalUrl ? "_blank" : "_self"}
->
-
+            class="card-wrapper"
+            href={card.externalUrl ? card.externalUrl : `/showcase/${card.slug}`}
+            target={card.externalUrl ? '_blank' : '_self'}
+            rel={card.externalUrl ? 'noopener noreferrer' : undefined}
+          >
             <div class="card-body">
-  <div class="card-media">
-    <img
-      src={card.cover}
-      loading="lazy"
-      alt={card.coverAlt}
-    />
-  </div>
-</div>
-
-            <div class="card-footer">
-              <div class="card-detail">
-                <div class="card-name card-item__title">
-                  {card.title}
-                </div>
-{card.description && card.description !== card.title && (
-  <div class="card-info">
-    {card.description}
-  </div>
-)}
+              <div class="card-figure">
+                <img
+                  class="card-figure__img"
+                  src={card.cover}
+                  alt={card.coverAlt}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             </div>
 
+            <div class="card-footer">
+              <div class="card-name card-item__title">
+                {card.title}
+              </div>
+            </div>
           </a>
         </div>
       ))}
-
     </div>
-
-    <div class="col-sm-1 col-xs-1 my-sizer-element"></div>
   </div>
 </div>
 
 <script is:inline type="module">
-import '/plugins/shuffle.js';
+  import '/plugins/shuffle.js';
 
-var Shuffle = window.Shuffle;
+  const Shuffle = window.Shuffle;
 
-class Demo {
-  constructor(element) {
-    this.element = element;
+  class Demo {
+    constructor(element) {
+      this.element = element;
 
-    this.shuffle = new Shuffle(element, {
-      itemSelector: '.card-item',
-      sizer: element.querySelector('.js-shuffle-sizer')
-    });
+      this.shuffle = new Shuffle(element, {
+  itemSelector: '.card-item',
+  sizer: element.querySelector('.my-sizer-element'),
+  percentPosition: true
+});
 
-    this.addShuffleEventListeners();
-    this.addFilterButtons();
-    this.addSorting();
-    this.addSearchFilter();
-
-    // ✅ Apply URL filter on load
-    this.applyInitialFilterFromUrl();
-  }
-
-  addShuffleEventListeners() {
-    this.shuffle.on(Shuffle.EventType.LAYOUT, data => {
-      console.log('layout. data:', data);
-    });
-  }
-
-  /* -------------------- FILTER -------------------- */
-
-  addFilterButtons() {
-    const options = document.querySelector('.filter-options');
-    if (!options) return;
-
-    const buttons = Array.from(options.children);
-    buttons.forEach(button => {
-      button.addEventListener('click',
-        this._handleFilterClick.bind(this),
-        false
-      );
-    });
-  }
-
-  _handleFilterClick(evt) {
-    const btn = evt.currentTarget;
-    const isActive = btn.classList.contains('active');
-    const group = btn.getAttribute('data-group');
-
-    this._removeActiveClassFromChildren(btn.parentNode);
-
-    let filterGroup;
-
-    if (isActive) {
-      btn.classList.remove('active');
-      filterGroup = Shuffle.ALL_ITEMS;
-    } else {
-      btn.classList.add('active');
-      filterGroup = group;
+      this.addFilterButtons();
+      this.addSorting();
+      this.addSearchFilter();
     }
 
-    this.shuffle.filter(filterGroup);
+    addFilterButtons() {
+      const options = document.querySelector('.filter-options');
+      if (!options) return;
 
-    // ✅ Sync URL
-    const url = new URL(window.location.href);
-
-    if (!filterGroup || filterGroup === Shuffle.ALL_ITEMS || filterGroup === "all") {
-      url.searchParams.delete("group");
-    } else {
-      url.searchParams.set("group", filterGroup);
+      Array.from(options.children).forEach((button) => {
+        button.addEventListener('click', this._handleFilterClick.bind(this), false);
+      });
     }
 
-    history.replaceState(null, "", url);
-  }
+    _handleFilterClick(evt) {
+      const btn = evt.currentTarget;
+      const isActive = btn.classList.contains('active');
+      const group = btn.getAttribute('data-group');
 
-  _removeActiveClassFromChildren(parent) {
-    const { children } = parent;
-    for (let i = children.length - 1; i >= 0; i--) {
-      children[i].classList.remove('active');
-    }
-  }
+      Array.from(btn.parentNode.children).forEach((child) => child.classList.remove('active'));
 
-  applyInitialFilterFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const group = params.get("group");
-    if (!group) return;
-
-    const btn = document.querySelector(`.filter-item[data-group="${group}"]`);
-    if (btn) btn.click();
-  }
-
-  /* -------------------- SORT -------------------- */
-
-  addSorting() {
-    const group = document.querySelector('.sort-options');
-    if (!group) return;
-
-    group.addEventListener(
-      'change',
-      this._handleSortChange.bind(this)
-    );
-  }
-
-  _handleSortChange(evt) {
-    const { value } = evt.target;
-
-    const buttons = Array.from(evt.currentTarget.children);
-    buttons.forEach(button => {
-      button.classList.toggle(
-        'active',
-        button.querySelector('input').value === value
-      );
-    });
-
-    const sortByDate = el => el.getAttribute('data-date-created');
-    const sortByTitle = el => el.getAttribute('data-title').toLowerCase();
-
-    if (value === 'date-created') {
-      this.shuffle.sort({ reverse: true, by: sortByDate });
-    } else if (value === 'title') {
-      this.shuffle.sort({ by: sortByTitle });
-    }
-  }
-
-  /* -------------------- SEARCH -------------------- */
-
-  addSearchFilter() {
-    const search = document.querySelector('.js-shuffle-search');
-    if (!search) return;
-
-    search.addEventListener(
-      'keyup',
-      this._handleSearchKeyup.bind(this)
-    );
-  }
-
-  _handleSearchKeyup(evt) {
-    const text = evt.target.value.toLowerCase();
-
-    this.shuffle.filter((element, shuffle) => {
-      if (shuffle.group !== Shuffle.ALL_ITEMS) {
-        const groups = JSON.parse(
-          element.getAttribute('data-groups')
-        );
-
-        if (groups.indexOf(shuffle.group) === -1) {
-          return false;
-        }
+      let filterGroup;
+      if (isActive) {
+        btn.classList.remove('active');
+        filterGroup = Shuffle.ALL_ITEMS;
+      } else {
+        btn.classList.add('active');
+        filterGroup = group;
       }
 
-      const title = element
-        .querySelector('.card-item__title')
-        .textContent
-        .toLowerCase()
-        .trim();
+      this.shuffle.filter(filterGroup);
+    }
 
-      return title.indexOf(text) !== -1;
-    });
+    addSorting() {
+      const group = document.querySelector('.sort-options');
+      if (!group) return;
+
+      group.addEventListener('change', this._handleSortChange.bind(this));
+    }
+
+    _handleSortChange(evt) {
+      const { value } = evt.target;
+
+      const sortByDate = (el) => el.getAttribute('data-date-created');
+      const sortByTitle = (el) => el.getAttribute('data-title').toLowerCase();
+
+      if (value === 'date-created') {
+        this.shuffle.sort({ reverse: true, by: sortByDate });
+      } else if (value === 'title') {
+        this.shuffle.sort({ by: sortByTitle });
+      }
+    }
+
+    addSearchFilter() {
+      const search = document.querySelector('.js-shuffle-search');
+      if (!search) return;
+
+      search.addEventListener('keyup', this._handleSearchKeyup.bind(this));
+    }
+
+    _handleSearchKeyup(evt) {
+      const text = evt.target.value.toLowerCase();
+
+      this.shuffle.filter((element, shuffle) => {
+        if (shuffle.group !== Shuffle.ALL_ITEMS) {
+          const groups = JSON.parse(element.getAttribute('data-groups'));
+          if (groups.indexOf(shuffle.group) === -1) return false;
+        }
+
+        const title = element
+          .querySelector('.card-item__title')
+          .textContent
+          .toLowerCase()
+          .trim();
+
+        return title.indexOf(text) !== -1;
+      });
+    }
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  window.demo = new Demo(
-    document.getElementById('js-shuffle')
-  );
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('js-shuffle');
+    if (el) window.demo = new Demo(el);
+  });
 </script>
