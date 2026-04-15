@@ -1,0 +1,30 @@
+---
+const { src, alt = '', ...rest } = Astro.props;
+
+const isVideo =
+  typeof src === 'string' &&
+  src.includes('/video/upload/') &&
+  src.endsWith('.mp4');
+---
+
+{isVideo ? (
+  <video
+    autoplay
+    loop
+    muted
+    playsinline
+    preload="metadata"
+    style="max-width:100%; height:auto;"
+  >
+    <source src={src} type="video/mp4" />
+  </video>
+) : (
+  <img
+    src={src}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+    style="max-width:100%; height:auto;"
+    {...rest}
+  />
+)}

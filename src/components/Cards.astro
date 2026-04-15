@@ -51,14 +51,27 @@ const count = cards.length;
           >
             <div class="card-body">
               <div class="card-figure">
-                <img
-                  class="card-figure__img"
-                  src={card.cover}
-                  alt={card.coverAlt}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+  {card.cover?.endsWith('.mp4') ? (
+    <video
+      class="card-figure__img"
+      muted
+      playsinline
+      preload="metadata"
+      loop
+      autoplay
+    >
+      <source src={card.cover} type="video/mp4" />
+    </video>
+  ) : (
+    <img
+      class="card-figure__img"
+      src={card.cover}
+      alt={card.coverAlt}
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+</div>
             </div>
 
             <div class="card-footer">
@@ -83,10 +96,9 @@ const count = cards.length;
       this.element = element;
 
       this.shuffle = new Shuffle(element, {
-  itemSelector: '.card-item',
-  sizer: element.querySelector('.my-sizer-element'),
-  percentPosition: true
-});
+        itemSelector: '.card-item',
+        sizer: element.querySelector('.my-sizer-element'),
+      });
 
       this.addFilterButtons();
       this.addSorting();
@@ -103,23 +115,26 @@ const count = cards.length;
     }
 
     _handleFilterClick(evt) {
-      const btn = evt.currentTarget;
-      const isActive = btn.classList.contains('active');
-      const group = btn.getAttribute('data-group');
+  const btn = evt.currentTarget;
+  const group = btn.getAttribute('data-group');
 
-      Array.from(btn.parentNode.children).forEach((child) => child.classList.remove('active'));
+  // reset active state
+  Array.from(btn.parentNode.children).forEach((child) => child.classList.remove('active'));
+  btn.classList.add('active');
 
-      let filterGroup;
-      if (isActive) {
-        btn.classList.remove('active');
-        filterGroup = Shuffle.ALL_ITEMS;
-      } else {
-        btn.classList.add('active');
-        filterGroup = group;
-      }
-
-      this.shuffle.filter(filterGroup);
-    }
+  // apply filter
+  if (group === 'all') {
+    this.shuffle.filter(Shuffle.ALL_ITEMS);
+    // keep URL clean
+    history.replaceState(null, '', window.location.pathname);
+  } else {
+    this.shuffle.filter(group);
+    // sync URL so refresh preserves state
+    const url = new URL(window.location.href);
+    url.searchParams.set('group', group);
+    history.replaceState(null, '', url);
+  }
+}
 
     addSorting() {
       const group = document.querySelector('.sort-options');
@@ -169,7 +184,29 @@ const count = cards.length;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('js-shuffle');
-    if (el) window.demo = new Demo(el);
-  });
+  const el = document.getElementById('js-shuffle');
+  if (!el) return;
+
+  const demo = new Demo(el);
+
+  const params = new URLSearchParams(window.location.search);
+  const initialGroup = params.get('group');
+
+  const buttons = document.querySelectorAll('.filter-options .filter-item');
+  buttons.forEach((b) => b.classList.remove('active'));
+
+  if (!initialGroup || initialGroup === 'all') {
+    const allBtn = document.querySelector('.filter-options .filter-item[data-group="all"]');
+    if (allBtn) allBtn.classList.add('active');
+    demo.shuffle.filter(Shuffle.ALL_ITEMS);
+  } else {
+    const targetBtn = document.querySelector(
+      `.filter-options .filter-item[data-group="${CSS.escape(initialGroup)}"]`
+    );
+    if (targetBtn) targetBtn.classList.add('active');
+    demo.shuffle.filter(initialGroup);
+  }
+
+  window.demo = demo;
+});
 </script>

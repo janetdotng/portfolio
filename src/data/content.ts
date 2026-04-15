@@ -164,15 +164,14 @@ export interface FilterItem {
 	dataGroup: string
 }
 export const filterItems: FilterItem[] = [
-	{ content: "💎 Highlights", dataGroup: "recommend" },
-	{ content: "Arts and Crafts", dataGroup: "artsandcrafts" },
-	{ content: "Commercial Works", dataGroup: "commercialworks" },
-	{ content: "Graphic Design", dataGroup: "graphicdesign" },
-	{ content: "Illustration", dataGroup: "illustration" },
-	{ content: "Motion Graphics", dataGroup: "motiongraphics" },
-	{ content: "Photography", dataGroup: "photography" },
-	{ content: "UX/UI", dataGroup: "uxui" },
-	{ content: "Video Production", dataGroup: "videoproduction" },
+  { content: "Arts and Crafts", dataGroup: "artsandcrafts" },
+  { content: "Commercial", dataGroup: "commercial" },
+  { content: "Graphic Design", dataGroup: "graphicdesign" },
+  { content: "Illustrations", dataGroup: "illustrations" },
+  { content: "Motion Graphics", dataGroup: "motiongraphics" },
+  { content: "Photography", dataGroup: "photography" },
+  { content: "UX/UI", dataGroup: "uxui" },
+  { content: "Live Action", dataGroup: "liveaction" },
 ];
 
 

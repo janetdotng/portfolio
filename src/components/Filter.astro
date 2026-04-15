@@ -7,7 +7,7 @@ const {count} = Astro.props;
 		<div class="row filter-wrapper relative overflow-hidden col-1a">
 			<ul class="flex filter-list filter-options">
 				<button class="filter-item filter-tag active" class="" data-group="all">
-					全部 <span>({count})</span>
+					All <span>({count})</span>
 				</button>
                 {filterItems.map((item) => (
                     <button  class="filter-item filter-tag" data-group={item.dataGroup}>

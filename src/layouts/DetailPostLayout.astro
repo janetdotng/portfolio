@@ -47,7 +47,7 @@ const { title, description,keywords} = Astro.props;
 			.detail {
 				display: flex;
 				flex-direction: column;
-				max-width: 1020px;
+				max-width: 1320px;
 				margin:0 auto;
 				padding-bottom:36px;
 			}
@@ -85,9 +85,13 @@ const { title, description,keywords} = Astro.props;
 
 			.post-header{
 				width:100%;
-				margin:24px auto 24px;
+				margin:24px auto 36px;
 				padding-bottom:2rem;
 				border-bottom: 1px solid var(--border);
+				position: relative;
+  max-width: 1320px;
+  padding-top: 1rem;
+  text-align: center;
 			}
 			h1{
 				font-size: 2.25rem;
@@ -164,6 +168,11 @@ const { title, description,keywords} = Astro.props;
 				}
 			}
 
+@media (max-width: 900px) {
+  .post-header {
+    padding-top: 2rem;
+  }
+}
 		</style>
 
 		<script>
