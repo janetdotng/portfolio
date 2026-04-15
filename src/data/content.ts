@@ -16,7 +16,7 @@ interface Nav {
 
 // Define navigation items
 export const nav: Nav = {
-	avatar:'/assets/author.jpg',
+	avatar:'/assets/author.png',
     items: [
         { label: 'Home', href: '/', target: '_self' },// target = '_blank' to open links on new tabs
 //        { label: 'Projects', href: '/project', target: '_self' },
@@ -27,7 +27,7 @@ export const nav: Nav = {
 };
 
 // Footer
-export const footerText = `© ${new Date().getFullYear()} Chenxi. All Rights Reserved.`
+export const footerText = `© ${new Date().getFullYear()} Janet.Ng. All Rights Reserved.`
 
 //SEO TDK
 interface SeoTdk {
