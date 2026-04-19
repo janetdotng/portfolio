@@ -52,25 +52,24 @@ const count = cards.length;
             <div class="card-body">
               <div class="card-figure">
   {card.cover?.endsWith('.mp4') ? (
-    <video
-      class="card-figure__img"
-      muted
-      playsinline
-      preload="metadata"
-      loop
-      autoplay
-    >
-      <source src={card.cover} type="video/mp4" />
-    </video>
-  ) : (
-    <img
-      class="card-figure__img"
-      src={card.cover}
-      alt={card.coverAlt}
-      loading="lazy"
-      decoding="async"
-    />
-  )}
+  <video
+    class="card-figure__img"
+    src={card.cover}
+    muted
+    playsinline
+    autoplay
+    loop
+    preload="metadata"
+  />
+) : (
+  <img
+    class="card-figure__img"
+    src={card.cover}
+    alt={card.coverAlt}
+    loading="lazy"
+    decoding="async"
+  />
+)}
 </div>
             </div>
 
