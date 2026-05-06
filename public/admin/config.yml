@@ -31,6 +31,9 @@ collections:
     format: "frontmatter"
     extension: "mdx"
 
+    identifier_field: "title"
+    summary: "{{title}}"
+
     nested:
       depth: 2
       summary: "{{title}}"
@@ -39,7 +42,7 @@ collections:
     meta:
       path:
         widget: "string"
-        label: "Path"
+        label: "Folder Path"
         index_file: "index"
 
     fields:
@@ -52,6 +55,7 @@ collections:
         widget: "datetime"
         format: "YYYY-MM-DD"
         time_format: false
+        default: ""
 
       - label: "Intro"
         name: "intro"
@@ -68,15 +72,19 @@ collections:
       - label: "Project Date"
         name: "projectDate"
         widget: "string"
+        required: false
+        default: ""
 
       - label: "Cover"
         name: "cover"
         widget: "file"
-        allow_multiple: false
+        required: true
         choose_url: true
+        allow_multiple: false
         media_library:
           config:
             max_files: 1
+            multiple: false
 
       - label: "Cover Type"
         name: "coverType"
@@ -91,20 +99,31 @@ collections:
         name: "coverAlt"
         widget: "string"
         required: false
+        hint: "Optional. If left empty, the site can fall back to the post title."
 
       - label: "Category"
         name: "category"
-        widget: "list"
-        field:
-          label: "Category"
-          name: "category"
-          widget: "string"
+        widget: "select"
+        multiple: true
+        min: 1
+        options:
+          - { label: "Arts and Crafts", value: "artsandcrafts" }
+          - { label: "Commercial", value: "commercial" }
+          - { label: "Graphic Design", value: "graphicdesign" }
+          - { label: "Illustrations", value: "illustrations" }
+          - { label: "Live Action", value: "liveaction" }
+          - { label: "Motion Graphics", value: "motiongraphics" }
+          - { label: "Photography", value: "photography" }
+          - { label: "UX/UI", value: "uxui" }
 
       - label: "Tag"
         name: "tag"
         widget: "string"
         required: false
+        default: ""
 
       - label: "Body"
         name: "body"
         widget: "markdown"
+        required: false
+        hint: "Use Markdown or HTML/MDX. For now, keep existing figure, image, video, and embed code patterns."
