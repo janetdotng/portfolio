@@ -1085,6 +1085,7 @@ display: none !important;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.25s ease;
 }
 
 /* Pattern repeats every 6 items */
@@ -1120,7 +1121,7 @@ display: none !important;
   align-items: center;
   justify-content: center;
   padding: 1.25rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.72);
   opacity: 0;
   transition: opacity 0.25s ease;
   text-align: center;
@@ -1134,6 +1135,11 @@ display: none !important;
 .card-wrapper:hover .card-overlay,
 .card-wrapper:focus-visible .card-overlay {
   opacity: 1;
+}
+
+.card-wrapper:hover .card-figure__img,
+.card-wrapper:focus-visible .card-figure__img {
+  transform: scale(1.03);
 }
 
 .card-overlay .card-name {
