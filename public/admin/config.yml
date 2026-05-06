@@ -1,0 +1,30 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "showcase"
+    label: "Showcase"
+    folder: "src/content/showcase"
+    create: true
+    slug: "{{slug}}"
+
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "publishDate", widget: "datetime" }
+      - { label: "Intro", name: "intro", widget: "text", required: false }
+      - { label: "Client", name: "client", widget: "string", required: false }
+      - { label: "Project Date", name: "projectDate", widget: "string" }
+
+      - { label: "Cover URL", name: "cover", widget: "string" }
+      - { label: "Cover Type", name: "coverType", widget: "select", options: ["image", "video"] }
+
+      - { label: "Cover Alt", name: "coverAlt", widget: "string" }
+
+      - { label: "Category", name: "category", widget: "list" }
+      - { label: "Tag", name: "tag", widget: "string" }
+
+      - { label: "Body", name: "body", widget: "markdown" }
