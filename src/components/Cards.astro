@@ -49,35 +49,37 @@ const count = cards.length;
             target={card.externalUrl ? '_blank' : '_self'}
             rel={card.externalUrl ? 'noopener noreferrer' : undefined}
           >
-            <div class="card-body">
-              <div class="card-figure">
-  {card.cover?.endsWith('.mp4') ? (
-  <video
-    class="card-figure__img"
-    src={card.cover}
-    muted
-    playsinline
-    autoplay
-    loop
-    preload="metadata"
-  />
-) : (
-  <img
-    class="card-figure__img"
-    src={card.cover}
-    alt={card.coverAlt}
-    loading="lazy"
-    decoding="async"
-  />
-)}
-</div>
-            </div>
+            
+<div class="card-body">
+  <div class="card-figure">
+    {card.cover?.endsWith('.mp4') ? (
+      <video
+        class="card-figure__img"
+        src={card.cover}
+        muted
+        playsinline
+        autoplay
+        loop
+        preload="metadata"
+      />
+    ) : (
+      <img
+        class="card-figure__img"
+        src={card.cover}
+        alt={card.coverAlt}
+        loading="lazy"
+        decoding="async"
+      />
+    )}
 
-            <div class="card-footer">
-              <div class="card-name card-item__title">
-                {card.title}
-              </div>
-            </div>
+    <div class="card-overlay">
+      <div class="card-name card-item__title">
+        {card.title}
+      </div>
+    </div>
+  </div>
+</div>
+
           </a>
         </div>
       ))}

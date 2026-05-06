@@ -341,7 +341,7 @@ h5 {
 
 h2 {
     line-height: 1.1;
-  font-family: "Quicksand", serif;
+  font-family: "Quicksand-bold", serif;
   font-weight: 500;
   font-style: normal;
       color: var(--color-0);
@@ -1109,9 +1109,38 @@ display: none !important;
   width: 100%;
 }
 
-/* Title spacing and truncation */
 .card-footer {
-  margin-top: 4px; /* increase title spacing slightly */
+  display: none;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  text-align: center;
+}
+
+.card-wrapper {
+  display: block;
+  text-decoration: none;
+}
+
+.card-wrapper:hover .card-overlay,
+.card-wrapper:focus-visible .card-overlay {
+  opacity: 1;
+}
+
+.card-overlay .card-name {
+  color: #fff;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  line-height: 1.25;
+  font-weight: 500;
 }
 
 .card-name {
