@@ -2,29 +2,109 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "public/uploads"
-public_folder: "/uploads"
+media_library:
+  name: cloudinary
+  output_filename_only: false
+  use_secure_url: true
+  use_transformations: true
+  config:
+    cloud_name: "dwj5kjslu"
+    api_key: "838247772957895"
+    default_transformations:
+      - - fetch_format: auto
+          quality: "auto:eco"
+          width: 1400
+          crop: limit
 
 collections:
   - name: "showcase"
     label: "Showcase"
+    label_singular: "Showcase Item"
+
     folder: "src/content/showcase"
     create: true
+    delete: true
+
     slug: "{{slug}}"
+    path: "{{slug}}/index"
+
+    format: "frontmatter"
+    extension: "mdx"
+
+    nested:
+      depth: 2
+      summary: "{{title}}"
+      subfolders: true
+
+    meta:
+      path:
+        widget: "string"
+        label: "Path"
+        index_file: "index"
 
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "publishDate", widget: "datetime" }
-      - { label: "Intro", name: "intro", widget: "text", required: false }
-      - { label: "Client", name: "client", widget: "string", required: false }
-      - { label: "Project Date", name: "projectDate", widget: "string" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
 
-      - { label: "Cover URL", name: "cover", widget: "string" }
-      - { label: "Cover Type", name: "coverType", widget: "select", options: ["image", "video"] }
+      - label: "Publish Date"
+        name: "publishDate"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        time_format: false
 
-      - { label: "Cover Alt", name: "coverAlt", widget: "string" }
+      - label: "Intro"
+        name: "intro"
+        widget: "text"
+        required: false
+        default: ""
 
-      - { label: "Category", name: "category", widget: "list" }
-      - { label: "Tag", name: "tag", widget: "string" }
+      - label: "Client"
+        name: "client"
+        widget: "string"
+        required: false
+        default: ""
 
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Project Date"
+        name: "projectDate"
+        widget: "string"
+
+      - label: "Cover"
+        name: "cover"
+        widget: "file"
+        allow_multiple: false
+        choose_url: true
+        media_library:
+          config:
+            max_files: 1
+
+      - label: "Cover Type"
+        name: "coverType"
+        widget: "select"
+        required: false
+        default: "image"
+        options:
+          - { label: "Image", value: "image" }
+          - { label: "Video", value: "video" }
+
+      - label: "Cover Alt"
+        name: "coverAlt"
+        widget: "string"
+        required: false
+
+      - label: "Category"
+        name: "category"
+        widget: "list"
+        field:
+          label: "Category"
+          name: "category"
+          widget: "string"
+
+      - label: "Tag"
+        name: "tag"
+        widget: "string"
+        required: false
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
