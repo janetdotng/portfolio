@@ -325,7 +325,7 @@ a {
 
 h1 {
     line-height: 1.1;
-    font-family: "Quicksand", serif;
+    font-family: "Quicksand-bold", serif;
     font-weight: 500;
     color: var(--color-0);
 }
@@ -341,7 +341,7 @@ h5 {
 
 h2 {
     line-height: 1.1;
-  font-family: "Quicksand", serif;
+  font-family: "Quicksand-bold", serif;
   font-weight: 500;
   font-style: normal;
       color: var(--color-0);
@@ -1043,7 +1043,7 @@ display: none !important;
   font-style: normal;
 }
 
-.quicksand-<uniquifier> {
+.quicksand-bold {
   font-family: "Quicksand", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
